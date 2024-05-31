@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>404 Particles with PixiJS</title>
+    <style>@import url("https://fonts.googleapis.com/css?family=Roboto");
+    * {
+        box-sizing: border-box;
+    }
+    body {
+        font-family: 'Roboto', sans-serif;
+        min-height: 100vh;
+        background: linear-gradient(35deg, #a1eeeb 30%, #4331ec 85%);
+        background: linear-gradient(35deg, #f8d60f 20%, #fc5c5c 85%);
+        background: linear-gradient(65deg, #fbdc14 20%, #04c4d4 20%, #04c4d4 65%, #fc5c5c 65%, #fc5c5c 85%);
+    }
+    canvas {
+        height: 30vh;
+        left: 0;
+        position: absolute;
+        top: 0;
+        width: 100vw;
+    }
+    canvas {
+        top: 50%;
+        transform: translate(0, -50%);
+    }
+    .content {
+        align-items: center;
+        color: #fafafa;
+        display: flex;
+        height: 100vh;
+        width: 100vw;
+        position: absolute;
+        justify-content: center;
+        z-index: 2;
+    }
+    .content h1 {
+        font-size: 4rem;
+        text-shadow: 10px 10px 5px rgba(0,0,0,0.5);
+    }
+    @media (min-width: 768px) {
+        .content h1 {
+            font-size: 10rem;
+        }
+    }
+    </style>
+</head>
+<body>
+<canvas></canvas>
+<div class="content">
+    <h1>404</h1>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/pixi.js/4.7.1/pixi.min.js"></script>
+<script>const {
+    PIXI: {
+        Application,
+        particles: { ParticleContainer },
+        Sprite } } =
+
+    window;
+let FONT_SIZE = innerHeight / 10;
+const FRACTION = 0.3;
+const PARTICLE_CONTAINER_OPTS = {
+    scale: true,
+    position: true,
+    alpha: true };
+
+const getHeight = () => Math.floor(innerHeight * FRACTION);
+const view = document.querySelector('canvas');
+const AMOUNT = 100;
+const onTick = () => {
+    if (
+        App.renderer.width !== innerWidth ||
+        App.renderer.height !== getHeight())
+    {
+        App.renderer.resize(innerWidth, getHeight());
+        Fours.removeChildren();
+        Ohhhs.removeChildren();
+        Page.removeChildren();
+        FONT_SIZE = innerHeight / 10;
+        bootstrapLayers();
+    }
+    for (const p of [...Fours.children, ...Ohhhs.children, ...Page.children]) {
+        p.x -= p.vx;
+        if (p.x < -p.width) {
+            p.x = p.startingX;
+        }
+    }
+};
+
+const App = new Application({
+    antialias: true,
+    height: getHeight(),
+    transparent: true,
+    view,
+    width: innerWidth });
+
+
+const createText = (text, opts = { height: FONT_SIZE * 2, width: FONT_SIZE * 2 }) => {
+    const canvas = document.createElement('canvas');
+    canvas.width = opts.width;
+    canvas.height = opts.height;
+    const context = canvas.getContext('2d');
+    context.font = `${Math.floor(innerHeight / 10)}px Roboto`;
+    context.fillStyle = '#ffffff';
+    context.fillText(text, 0, FONT_SIZE, innerWidth);
+    return canvas;
+};
+
+const addParticles = (amount, container, text) => {
+    new Array(amount).fill().map(p => {
+        p = new Sprite.from(text);
+        p.vx = Math.random() * 10 + 1;
+        p.x = p.startingX = innerWidth + (Math.floor(Math.random() * (innerWidth * 2 - text.width * 2)) + text.width * 2);
+        p.y = Math.floor(Math.random() * (getHeight() - text.height / 2));
+        p.scale.x = p.scale.y = (Math.random() * 50 + 50) / 100;
+        p.alpha = Math.random() * 50 / 100;
+        container.addChild(p);
+    });
+};
+
+const bootstrapLayers = () => {
+    addParticles(Math.floor(innerWidth / 10), Fours, createText('4'));
+    addParticles(Math.floor(innerWidth / 10), Ohhhs, createText('0'));
+    addParticles(Math.floor(innerWidth / 50), Page, createText('Page not found', { height: FONT_SIZE * 2, width: innerWidth }));
+};
+
+const Fours = new ParticleContainer(Math.floor(innerWidth / 10), PARTICLE_CONTAINER_OPTS);
+const Ohhhs = new ParticleContainer(Math.floor(innerWidth / 10), PARTICLE_CONTAINER_OPTS);
+const Page = new ParticleContainer(Math.floor(innerWidth / 50), PARTICLE_CONTAINER_OPTS);
+bootstrapLayers();
+
+App.stage.addChild(Fours);
+App.stage.addChild(Ohhhs);
+App.stage.addChild(Page);
+App.ticker.add(onTick);</script>
+</body>
+</html>

@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>认领码</title>
+</head>
+<body>
+    <p>恭喜您<span th:text="${user.account}"></span>获得了以下物品的认领码</p>
+    <div class="thingMsg">
+        <p>物品名称:<span style="color: #04c4d4;font-size: 1.25em" th:text="${specification.itemName}"></span></p>
+        <p>物品描述:<span th:text="${specification.description}"></span></p>
+        <p>物品被找到的时间:<span th:text="${specification.foundTime}"></span></p>
+        <h2>认领码是:<span style="color:#18b2ea;" th:text="${code}"></span></h2>
+        <span style="color: #ea0e0e;font-size: 2em">认领码有效期是七天，请您尽快到指定地点认领!</span>
+    </div>
+</body>
+</html>

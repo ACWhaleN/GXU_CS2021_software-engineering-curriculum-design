@@ -1,0 +1,69 @@
+
+server:
+  port: 8080
+spring:
+  logging:
+    level:
+      root: debug
+
+  datasource:
+    url: jdbc:mysql://127.0.0.1:3306/manager
+    username: root
+    password: gxu
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm:ss
+    time-zone: GMT+8
+  mvc:
+    format:
+      date: yyyy-MM-dd HH:mm:ss
+  mail:
+    host: smtp.qq.com
+    port: 587
+    username: 2609117972@qq.com
+    password: crfflgtfizcjeafj
+    default-encoding: UTF-8
+  redis:
+    database: 0
+    host: r-wz9wfy18q9xno3hfq4pd.redis.rds.aliyuncs.com
+    port: 6379
+    password: XGC123456!
+    lettuce:
+      pool:
+        max-wait: -1
+        max-idle: 8
+        min-idle: 0
+        max-active: 20
+  servlet:
+    multipart:
+      max-file-size: 10MB # 上传文件最大大小
+
+myproject:
+  imgupload:
+#    path1: file:D:/amy/CS/junior/SE/LostImage/
+#    path2: file:D:/amy/CS/junior/SE/FoundImage/
+    path1: file:D:/A_Mycodes/intellij_IDEA_code/backenddesign1_imgs/LostImage/
+    path2: file:D:/A_Mycodes/intellij_IDEA_code/backenddesign1_imgs/FoundImage/
+    path3: file:D:/期末复习/软件工程/数据库资料/管理员头像/
+  database:
+    category:
+      - "日常用品"
+      - "贵重物品"
+      - "证件"
+      - "电子设备"
+      - "书籍"
+      - "特殊物品"
+
+
+
+# 关闭驼峰命名
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: false
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+# ssl
+#server:
+#  ssl:
+#    key-store: classpath:https.key
+#    key-alias: myhttps
+#    key-store-password: 123456

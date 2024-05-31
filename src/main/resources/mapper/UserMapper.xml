@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gxu.design.mapper.UserMapper">
+
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="org.gxu.design.entity.User">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="account" column="account" jdbcType="VARCHAR"/>
+        <result property="password" column="password" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="nickName" column="nickName" jdbcType="VARCHAR"/>
+        <result property="sex" column="sex" jdbcType="CHAR"/>
+        <result property="phone" column="phone" jdbcType="VARCHAR"/>
+        <result property="mailbox" column="mailbox" jdbcType="VARCHAR"/>
+        <association property="position" javaType="org.gxu.design.entity.Position">
+            <id property="id" column="position_id" jdbcType="INTEGER"/>
+            <result property="name" column="position_name" jdbcType="VARCHAR"/>
+            <result property="status" column="position_status" jdbcType="INTEGER"/>
+            <result property="description" column="position_description" jdbcType="VARCHAR"/>
+        </association>
+        <association property="department" javaType="org.gxu.design.entity.Department">
+            <id property="id" column="department_id" jdbcType="INTEGER"/>
+            <result property="name" column="department_name" jdbcType="VARCHAR"/>
+            <result property="description" column="department_description" jdbcType="VARCHAR"/>
+        </association>
+    </resultMap>
+
+    <!-- 基础列列表 -->
+    <sql id="Base_Column_List">
+        id, account, password,
+        name, nickName,
+        position_id, department_id,
+        sex, phone,
+        mailbox
+    </sql>
+
+    <!-- 查询所有用户ID -->
+    <select id="selectAllIds" resultType="java.lang.String">
+        SELECT id FROM user
+    </select>
+
+    <!-- 查询所有用户 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT
+        u.id, u.account, u.password, u.name, u.nickName,
+        u.position_id, u.department_id, u.sex, u.phone, u.mailbox,
+        p.name as position_name, p.status as position_status, p.description as position_description,
+        d.name as department_name, d.description as department_description
+        FROM user u
+        LEFT JOIN position p ON u.position_id = p.id
+        LEFT JOIN department d ON u.department_id = d.id
+    </select>
+
+    <!-- 根据ID查询用户 -->
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT
+        u.id, u.account, u.password, u.name, u.nickName,
+        u.position_id, u.department_id, u.sex, u.phone, u.mailbox,
+        p.name as position_name, p.status as position_status, p.description as position_description,
+        d.name as department_name, d.description as department_description
+        FROM user u
+        LEFT JOIN position p ON u.position_id = p.id
+        LEFT JOIN department d ON u.department_id = d.id
+        WHERE u.id = #{id}
+    </select>
+
+    <!-- 插入用户 -->
+    <insert id="insert" parameterType="org.gxu.design.entity.User">
+        INSERT INTO user (id, account, password, name, nickName, position_id, department_id, sex, phone, mailbox)
+        VALUES (#{id}, #{account}, #{password}, #{name}, #{nickName}, #{position.id}, #{department.id}, #{sex}, #{phone}, #{mailbox})
+    </insert>
+
+    <!-- 更新用户 -->
+    <update id="updateById" parameterType="org.gxu.design.entity.User">
+        UPDATE user
+        SET
+        account = #{account},
+        password = #{password},
+        name = #{name},
+        nickName = #{nickName},
+        position_id = #{position.id},
+        department_id = #{department.id},
+        sex = #{sex},
+        phone = #{phone},
+        mailbox = #{mailbox}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除用户 -->
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM user WHERE id = #{id}
+    </delete>
+
+</mapper>

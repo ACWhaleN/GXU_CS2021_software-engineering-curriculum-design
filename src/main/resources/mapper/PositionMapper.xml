@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gxu.design.mapper.PositionMapper">
+
+    <!-- 基础结果映射 -->
+    <resultMap id="BaseResultMap" type="org.gxu.design.entity.Position">
+        <id property="id" column="id" jdbcType="VARCHAR"/>
+        <result property="name" column="name" jdbcType="VARCHAR"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+    </resultMap>
+
+    <!-- 基础列名列表 -->
+    <sql id="Base_Column_List">
+        id, name, status, description
+    </sql>
+
+    <!-- 查询所有职位 -->
+    <select id="selectAll" resultMap="BaseResultMap">
+        SELECT <include refid="Base_Column_List"/> FROM position
+    </select>
+
+    <!-- 通过职位ID查询 -->
+    <select id="selectById" resultMap="BaseResultMap" parameterType="java.lang.String">
+        SELECT <include refid="Base_Column_List"/> FROM position WHERE id = #{id}
+    </select>
+
+    <!-- 插入职位 -->
+    <insert id="insert" parameterType="org.gxu.design.entity.Position">
+        INSERT INTO position (id, name, status, description)
+        VALUES (#{id}, #{name}, #{status}, #{description})
+    </insert>
+
+    <!-- 更新职位 -->
+    <update id="updateById" parameterType="org.gxu.design.entity.Position">
+        UPDATE position
+        SET name = #{name}, status = #{status}, description = #{description}
+        WHERE id = #{id}
+    </update>
+
+    <!-- 删除职位 -->
+    <delete id="deleteById" parameterType="java.lang.String">
+        DELETE FROM position WHERE id = #{id}
+    </delete>
+
+</mapper>

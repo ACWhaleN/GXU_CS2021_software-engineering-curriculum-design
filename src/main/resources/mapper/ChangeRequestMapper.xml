@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.gxu.design.mapper.ChangeRequestMapper">
+
+    <!-- 基础结果映射 -->
+    <resultMap id="ChangeRequestResultMap" type="org.gxu.design.entity.ChangeRequest">
+        <id property="id" column="id" jdbcType="INTEGER"/>
+        <result property="requestMessage" column="request_message" jdbcType="VARCHAR"/>
+        <result property="requestTime" column="request_time" jdbcType="TIMESTAMP"/>
+        <result property="status" column="status" jdbcType="VARCHAR"/>
+        <!-- 关联查询用户信息 -->
+        <association property="user" javaType="org.gxu.design.entity.User">
+            <id property="id" column="user_id" jdbcType="INTEGER"/>
+            <result property="account" column="account" jdbcType="VARCHAR"/>
+            <result property="password" column="password" jdbcType="VARCHAR"/>
+            <result property="name" column="name" jdbcType="VARCHAR"/>
+            <result property="nickName" column="nickName" jdbcType="VARCHAR"/>
+            <result property="sex" column="sex" jdbcType="CHAR"/>
+            <result property="phone" column="phone" jdbcType="VARCHAR"/>
+            <result property="mailbox" column="mailbox" jdbcType="VARCHAR"/>
+            <!-- 其他用户信息的映射 -->
+        </association>
+        <!-- 关联查询请求的职位信息 -->
+        <association property="requestedPosition" javaType="org.gxu.design.entity.Position">
+            <id property="id" column="requested_position_id" jdbcType="INTEGER"/>
+            <result property="name" column="position_name" jdbcType="VARCHAR"/>
+            <result property="status" column="position_status" jdbcType="VARCHAR"/>
+            <result property="description" column="position_description" jdbcType="VARCHAR"/>
+            <!-- 其他职位信息的映射 -->
+        </association>
+        <!-- 关联查询请求的部门信息 -->
+        <association property="requestedDepartment" javaType="org.gxu.design.entity.Department">
+            <id property="id" column="requested_department_id" jdbcType="INTEGER"/>
+            <result property="name" column="department_name" jdbcType="VARCHAR"/>
+            <result property="description" column="department_description" jdbcType="VARCHAR"/>
+            <!-- 其他部门信息的映射 -->
+        </association>
+    </resultMap>
+
+    <!-- 查询所有调动请求 -->
+    <select id="selectAll" resultMap="ChangeRequestResultMap">
+        SELECT cr.id, cr.request_message, cr.request_time, cr.status,
+        u.id as user_id, u.account, u.password, u.name, u.nickName,u.sex, u.phone, u.mailbox,
+        p.id as requested_position_id, p.name as position_name, p.status as position_status, p.description as position_description,
+        d.id as requested_department_id, d.name as department_name, d.description as department_description
+        FROM change_requests cr
+        LEFT JOIN user u ON cr.user_id = u.id
+        LEFT JOIN position p ON cr.requested_position_id = p.id
+        LEFT JOIN department d ON cr.requested_department_id = d.id
+    </select>
+
+    <!-- 根据ID查询调动请求 -->
+    <select id="selectById" resultMap="ChangeRequestResultMap" parameterType="int">
+        SELECT cr.id, cr.request_message, cr.request_time, cr.status,
+        u.id as user_id, u.account, u.password, u.name, u.nickName, u.sex, u.phone, u.mailbox,
+        p.id as requested_position_id, p.name as position_name, p.status as position_status, p.description as position_description,
+        d.id as requested_department_id, d.name as department_name, d.description as department_description
+        FROM change_requests cr
+        LEFT JOIN user u ON cr.user_id = u.id
+        LEFT JOIN position p ON cr.requested_position_id = p.id
+        LEFT JOIN department d ON cr.requested_department_id = d.id
+        WHERE cr.id = #{id}
+    </select>
+    <!-- 根据状态查询调动请求 -->
+    <select id="selectListByStatus" resultMap="ChangeRequestResultMap" parameterType="string">
+        SELECT cr.id, cr.request_message, cr.request_time, cr.status,
+        u.id as user_id, u.account, u.password, u.name, u.nickName, u.sex, u.phone, u.mailbox,
+        p.id as requested_position_id, p.name as position_name, p.status as position_status, p.description as position_description,
+        d.id as requested_department_id, d.name as department_name, d.description as department_description
+        FROM change_requests cr
+        LEFT JOIN user u ON cr.user_id = u.id
+        LEFT JOIN position p ON cr.requested_position_id = p.id
+        LEFT JOIN department d ON cr.requested_department_id = d.id
+        WHERE cr.status = #{status}
+    </select>
+    <!-- 审核完成后更新调动请求的状态 -->
+    <update id="updateStatusById" parameterType="map">
+        UPDATE change_requests
+        SET status = #{status}
+        WHERE id = #{id}
+    </update>
+</mapper>
